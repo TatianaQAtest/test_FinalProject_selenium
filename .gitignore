@@ -1,0 +1,22 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+
+# Unit test / coverage reports
+.cache
+.pytest/
+.pytest_cache/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+selenium_env/
+selenium_env2/
+
+# PyCharm
+.idea/
