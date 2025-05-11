@@ -65,4 +65,8 @@ class BasePage():
 
     def should_be_login_link(self):
         assert self.is_element_present(*BasePageLocators.LOGIN_LINK), "Login link is not presented"
-        
+
+# 4.3 шаг 10 Задание: наследование и отрицательные проверки 
+    def go_to_basket_page(self):
+        basket_button = self.browser.find_element(*BasePageLocators.BASKET_BUTTON)
+        basket_button.click()        
