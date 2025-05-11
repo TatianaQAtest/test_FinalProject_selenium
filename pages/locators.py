@@ -18,3 +18,11 @@ class ProductPageLocators():
     # Сообщения, которые появляются после нажатия кнопки "добавить в корзину"
     MESSAGE_BASKET_NAME = (By.CSS_SELECTOR, '.alert-success:first-child .alertinner strong')    
     MESSAGE_BASKET_PRICE = (By.CSS_SELECTOR, '.alert-info .alertinner strong')
+
+    #Отрицательные проверки: как проверить отсутствие элемента
+    SUCCESS_MESSAGE  = (By.CSS_SELECTOR, '.alert-success:first-child')
+
+# Плюсы наследования: пример
+class BasePageLocators():
+    LOGIN_LINK = (By.CSS_SELECTOR, "#login_link")
+    LOGIN_LINK_INVALID = (By.CSS_SELECTOR, "#login_link_inc")
