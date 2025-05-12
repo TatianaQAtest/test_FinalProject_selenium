@@ -69,4 +69,10 @@ class BasePage():
 # 4.3 шаг 10 Задание: наследование и отрицательные проверки 
     def go_to_basket_page(self):
         basket_button = self.browser.find_element(*BasePageLocators.BASKET_BUTTON)
-        basket_button.click()        
+        basket_button.click()  
+
+# Для 4.3.13 задания: группировка тестов и setup
+    def should_be_authorized_user(self):
+    # Проверка: пользователь залогинен
+        assert self.is_element_present(*BasePageLocators.USER_ICON), "User icon is not presented," \
+                                                                 " probably unauthorised user"      

@@ -2,10 +2,14 @@ import pytest
 import time
 from .pages.product_page import ProductPage
 from .pages.basket_page import BasketPage
+from .pages.login_page import LoginPage
 
 # Запуск теста: pytest -v --tb=line --language=en test_main_page.py
 # Маркировка теста для его пропуска @pytest.mark.skip
 # Маркировка упавших тестов @pytest.mark.xfail
+
+# При группировке тестов с помощью класса и маркировкой для всего класса, 
+# тогда запуск теста :pytest -s -m "login_user" test_product_page.py
 
 @pytest.mark.skip
 def test_guest_can_add_product_to_basket(browser):
@@ -101,12 +105,13 @@ def test_guest_can_go_to_login_page_from_product_page(browser):
     page.open()    
     page.go_to_login_page()
 
+@pytest.mark.skip
 def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
 # для задания: наследование и отрицательные проверки
 # 1 Гость открывает страницу товара 
 # 2 Переходит в корзину по кнопке в шапке сайта
 # 3 Ожидаем, что в корзине нет товаров
-# 4 Ожидаем, что есть текст о том что корзина пуста
+# 4 Ожидаем, что есть текст о том, что корзина пуста
  
     link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
     page = ProductPage(browser, link)
@@ -117,3 +122,43 @@ def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
     # Создаем экземпляр страницы корзины, присваиваем ее переменной basket_page
     basket_page.should_be_empty_basket()
     basket_page.should_be_message_empty_basket()
+
+@pytest.mark.login_user
+class TestUserAddToBasketFromProductPage():
+# Для 4.3.13 задания: группировка тестов и setup
+    
+    @pytest.fixture(scope="function", autouse=True)
+    def setup(self, browser):        
+    # setup выполняется перед запуском каждого теста из класса (часто это подготовка данных для теста)
+    # 1 Открыть страницу регистрации
+    # 2 Зарегистрировать нового пользователя 
+    # 3 Проверить, что пользователь залогинен
+ 
+        link = "http://selenium1py.pythonanywhere.com/ru/accounts/login/"
+        login_page = LoginPage(browser, link)
+        login_page.open()
+        email = str(time.time()) + "@fakemail.org"
+        password = str(time.time())
+        login_page.register_new_user(email, password)
+        login_page.should_be_authorized_user()
+    
+
+    def test_user_cant_see_success_message(self, browser):    
+     
+        link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
+        product_page = ProductPage(browser, link)
+        product_page.open() 
+    
+        time.sleep(1)   
+        product_page.should_not_be_success_message()
+
+    def test_user_can_add_product_to_basket(self, browser):    
+
+        link = "http://selenium1py.pythonanywhere.com/ru/catalogue/the-shellcoders-handbook_209/?promo=newYear"
+        product_page = ProductPage(browser, link)
+        product_page.open()                   
+        
+        product_page.add_to_basket()                
+        product_page.solve_quiz_and_get_code()   
+        product_page.should_be_add_to_basket()    
+
