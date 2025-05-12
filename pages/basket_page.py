@@ -3,7 +3,6 @@ from .base_page import BasePage
 from  .locators import BasketPageLocators
 
 
-# 4.3 шаг 10 Задание: наследование и отрицательные проверки
 class BasketPage(BasePage):
     def should_be_empty_basket(self):
         time.sleep(3)

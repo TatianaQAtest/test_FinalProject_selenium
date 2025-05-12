@@ -4,38 +4,12 @@ from .pages.product_page import ProductPage
 from .pages.basket_page import BasketPage
 from .pages.login_page import LoginPage
 
-# Запуск теста: pytest -v --tb=line --language=en test_main_page.py
-# Маркировка теста для его пропуска @pytest.mark.skip
-# Маркировка упавших тестов @pytest.mark.xfail
-
-# При группировке тестов с помощью класса и маркировкой для всего класса, 
-# тогда запуск теста :pytest -s -m "login_user" test_product_page.py
-
-@pytest.mark.skip
-def test_guest_can_add_product_to_basket(browser):
-    # Задание: добавление в корзину со страницы товара
-    # 1. Открываем страницу товара
-    # 2. Нажимаем на кнопку "Добавить в корзину"
-    # 3. Посчитать результат математического выражения - метод solve_quiz_and_get_code() (файл base_page.py) и ввести ответ.
-
-
-    link = "http://selenium1py.pythonanywhere.com/ru/catalogue/the-shellcoders-handbook_209/?promo=newYear"
-
-    product_page = ProductPage(browser, link)
-    product_page.open()                      # открываем страницу товара
-    
-      
-    product_page.add_to_basket()             # метод - добавить товар в корзину   
-    product_page.solve_quiz_and_get_code()   # метод для получения проверочного кода (в base_page)
-    product_page.should_be_add_to_basket()   # метод - проверка,что товар добавлен в корзину (название товара и его цена совпадает)(в product_page)
-
+# Запуск тестов с маркировкой @pytest.mark.need_review:  pytest -v --tb=line --language=en -m need_review
+# Тесты из предыдущих заданий отмечены маркировкой @pytest.mark.skip для пропуска.
 
 @pytest.mark.skip
 @pytest.mark.parametrize('link_add', ["offer0", "offer1", "offer2", "offer3", "offer4", "offer5", "offer6", pytest.param("offer7", marks=pytest.mark.xfail), "offer8", "offer9"])
 def test_guest_can_add_product_to_basket(browser, link_add):
-#Задание: независимость контента, ищем баг (c параметризацией)
-#Упавший тест "offer7" отмечен как xfail
-
     okay_link = f"http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo={link_add}"
 
     product_page = ProductPage(browser, okay_link)
@@ -45,15 +19,24 @@ def test_guest_can_add_product_to_basket(browser, link_add):
     product_page.solve_quiz_and_get_code()
     product_page.should_be_add_to_basket()
 
-#Задание: отрицательные проверки
+@pytest.mark.need_review
+def test_guest_can_add_product_to_basket(browser): 
+    link = "http://selenium1py.pythonanywhere.com/catalogue/the-shellcoders-handbook_209/?promo=newYear"
+
+    product_page = ProductPage(browser, link)
+    product_page.open()
+          
+    time.sleep(1)
+    product_page.add_to_basket()
+                    
+    product_page.solve_quiz_and_get_code() 
+    time.sleep(2)  
+    product_page.should_be_add_to_basket()   
+
 @pytest.mark.skip
-def test_guest_cant_see_success_message_after_adding_product_to_basket(browser):
-    #Проверяем (с помощью is_not_element_present), что нет сообщения об успехе после добавления товара в корзину
-    #1. Открываем страницу товара 
-    #2. Добавляем товар в корзину 
-    #3. Проверяем, что нет сообщения об успехе.
-   
+def test_guest_cant_see_success_message_after_adding_product_to_basket(browser):   
     link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
+
     product_page = ProductPage(browser, link)
     product_page.open()
             
@@ -62,12 +45,9 @@ def test_guest_cant_see_success_message_after_adding_product_to_basket(browser):
     product_page.should_not_be_success_message()
 
 @pytest.mark.skip
-def test_guest_cant_see_success_message(browser):  
-    #Проверяем (с помощью is_not_element_present), что нет сообщения об успехе после того, как открыли страницу товара
-    #1. Открываем страницу товара 
-    #2. Проверяем, что нет сообщения об успехе
-
+def test_guest_cant_see_success_message(browser):
     link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
+
     product_page = ProductPage(browser, link)
     product_page.open() 
     
@@ -76,12 +56,8 @@ def test_guest_cant_see_success_message(browser):
 
 @pytest.mark.skip    
 def test_message_disappeared_after_adding_product_to_basket(browser):
-    #Проверяем (с помощью is_disappeared), что нет сообщения об успехе после добавления товара в корзину 
-    #1. Открываем страницу товара
-    #2. Добавляем товар в корзину
-    #3. Проверяем, что нет сообщения об успех.
-
     link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
+
     product_page = ProductPage(browser, link)
     product_page.open() 
           
@@ -91,74 +67,77 @@ def test_message_disappeared_after_adding_product_to_basket(browser):
 
 @pytest.mark.skip
 def test_guest_should_see_login_link_on_product_page(browser):
-#Тест: гость видит ссылку login_link на странице продукта"
     link = "http://selenium1py.pythonanywhere.com/en-gb/catalogue/the-city-and-the-stars_95/"
+
     page = ProductPage(browser, link)
     page.open()        
     page.should_be_login_link()   
 
-@pytest.mark.skip
+@pytest.mark.need_review
 def test_guest_can_go_to_login_page_from_product_page(browser):
-#Тест: гость может перейти на страницу логина со страницы продукта
     link = "http://selenium1py.pythonanywhere.com/en-gb/catalogue/the-city-and-the-stars_95/"
+
     page = ProductPage(browser, link)
-    page.open()    
+    page.open()
+ 
+    time.sleep(2)   
     page.go_to_login_page()
 
-@pytest.mark.skip
-def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
-# для задания: наследование и отрицательные проверки
-# 1 Гость открывает страницу товара 
-# 2 Переходит в корзину по кнопке в шапке сайта
-# 3 Ожидаем, что в корзине нет товаров
-# 4 Ожидаем, что есть текст о том, что корзина пуста
- 
-    link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
-    page = ProductPage(browser, link)
-    page.open() 
+    time.sleep(2)
+    login_page = LoginPage(browser, browser.current_url)
+    login_page.should_be_login_page()
 
-    page.go_to_basket_page()
-    basket_page = BasketPage(browser, browser.current_url)\
-    # Создаем экземпляр страницы корзины, присваиваем ее переменной basket_page
+
+@pytest.mark.need_review
+def test_guest_cant_see_product_in_basket_opened_from_product_page(browser): 
+    link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
+
+    page = ProductPage(browser, link)
+    page.open()
+ 
+    time.sleep(2)
+    page.go_to_basket_page()    
+
+    basket_page = BasketPage(browser, browser.current_url)
     basket_page.should_be_empty_basket()
     basket_page.should_be_message_empty_basket()
 
 @pytest.mark.login_user
-class TestUserAddToBasketFromProductPage():
-# Для 4.3.13 задания: группировка тестов и setup
-    
+class TestUserAddToBasketFromProductPage():    
     @pytest.fixture(scope="function", autouse=True)
-    def setup(self, browser):        
-    # setup выполняется перед запуском каждого теста из класса (часто это подготовка данных для теста)
-    # 1 Открыть страницу регистрации
-    # 2 Зарегистрировать нового пользователя 
-    # 3 Проверить, что пользователь залогинен
- 
-        link = "http://selenium1py.pythonanywhere.com/ru/accounts/login/"
+    def setup(self, browser):   
+        link = "http://selenium1py.pythonanywhere.com/en-gb/accounts/login/"
+
         login_page = LoginPage(browser, link)
         login_page.open()
+
         email = str(time.time()) + "@fakemail.org"
         password = str(time.time())
+
         login_page.register_new_user(email, password)
         login_page.should_be_authorized_user()
     
 
     def test_user_cant_see_success_message(self, browser):    
-     
         link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
+
         product_page = ProductPage(browser, link)
         product_page.open() 
     
         time.sleep(1)   
         product_page.should_not_be_success_message()
+    
+    @pytest.mark.need_review
+    def test_user_can_add_product_to_basket(self, browser): 
+        link = "http://selenium1py.pythonanywhere.com/catalogue/the-shellcoders-handbook_209/?promo=newYear"
 
-    def test_user_can_add_product_to_basket(self, browser):    
-
-        link = "http://selenium1py.pythonanywhere.com/ru/catalogue/the-shellcoders-handbook_209/?promo=newYear"
         product_page = ProductPage(browser, link)
-        product_page.open()                   
-        
-        product_page.add_to_basket()                
-        product_page.solve_quiz_and_get_code()   
+        product_page.open()
+                   
+        time.sleep(1)
+        product_page.add_to_basket()
+                       
+        product_page.solve_quiz_and_get_code() 
+        time.sleep(2)  
         product_page.should_be_add_to_basket()    
 
